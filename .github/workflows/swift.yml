@@ -13,13 +13,7 @@ jobs:
   build:
 
     runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: "Carthage Bootstrap"
-      uses: olejnjak/carthage-workaround@v1
-      with:
-        action: bootstrap --platform iOS  --use-xcframeworks --cache-builds
+    
     - name: Build
       run: swift build -v
     - name: Run tests
