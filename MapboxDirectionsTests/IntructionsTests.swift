@@ -28,7 +28,7 @@ class SpokenInstructionsTests: XCTestCase {
         
         stub(condition: isHost("api.mapbox.com")
             && containsQueryParams(queryParams)) { _ in
-                let path = Bundle(for: type(of: self)).path(forResource: "instructions", ofType: "json")
+                let path = Bundle.module.path(forResource: "instructions", ofType: "json")
                 return HTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }
         
@@ -116,7 +116,7 @@ class SpokenInstructionsTests: XCTestCase {
         ]
         
         stub(condition: isHost("api.mapbox.com") && containsQueryParams(queryParams)) { _ in
-            let path = Bundle(for: type(of: self)).path(forResource: "subLaneInstructions", ofType: "json")
+            let path = Bundle.module.path(forResource: "subLaneInstructions", ofType: "json")
             return HTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }
         
@@ -183,7 +183,7 @@ class SpokenInstructionsTests: XCTestCase {
         ]
         
         stub(condition: isHost("api.mapbox.com") && containsQueryParams(queryParams)) { _ in
-            let path = Bundle(for: type(of: self)).path(forResource: "subVisualInstructions", ofType: "json")
+            let path = Bundle.module.path(forResource: "subVisualInstructions", ofType: "json")
             return HTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }
         

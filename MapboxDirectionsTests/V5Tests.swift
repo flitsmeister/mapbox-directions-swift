@@ -27,7 +27,7 @@ class V5Tests: XCTestCase {
         stub(condition: isHost("api.mapbox.com")
             && isPath("/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91.json")
             && containsQueryParams(queryParams)) { _ in
-                let path = Bundle(for: type(of: self)).path(forResource: filePath ?? "v5_driving_dc_\(shapeFormat)", ofType: "json")
+                let path = Bundle.module.path(forResource: filePath ?? "v5_driving_dc_\(shapeFormat)", ofType: "json")
                 let filePath = URL(fileURLWithPath: path!)
                 let data = try! Data(contentsOf: filePath, options: [])
                 let jsonObject = try! JSONSerialization.jsonObject(with: data, options: [])

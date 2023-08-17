@@ -23,7 +23,7 @@ class V4Tests: XCTestCase {
         stub(condition: isHost("api.mapbox.com")
             && isPath("/v4/directions/mapbox.driving/-122.42,37.78;-77.03,38.91.json")
             && containsQueryParams(queryParams)) { _ in
-                let path = Bundle(for: type(of: self)).path(forResource: "v4_driving_dc_\(shapeFormat)", ofType: "json")
+                let path = Bundle.module.path(forResource: "v4_driving_dc_\(shapeFormat)", ofType: "json")
                 return HTTPStubsResponse(fileAtPath: path!, statusCode: 200, headers: ["Content-Type": "application/json"])
         }
         

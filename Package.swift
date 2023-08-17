@@ -36,7 +36,8 @@ let package = Package(
                 .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
             ],
-            path: "MapboxDirectionsTests"
+            path: "MapboxDirectionsTests",
+            resources: [.process("resources")]
         ),
     ]
 )
