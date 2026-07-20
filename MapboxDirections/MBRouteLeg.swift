@@ -47,6 +47,12 @@ open class RouteLeg: NSObject, NSSecureCoding {
         self.expectedSegmentTravelTimes = expectedSegmentTravelTimes
         self.segmentSpeeds = segmentSpeeds
         self.segmentCongestionLevels = congestionLevels
+
+        if let notificationsJSON = json["notifications"] as? [JSONDictionary] {
+            notifications = notificationsJSON.compactMap { Notification(json: $0) }
+        } else {
+            notifications = []
+        }
     }
     
     /**
@@ -95,6 +101,7 @@ open class RouteLeg: NSObject, NSSecureCoding {
         expectedSegmentTravelTimes = decoder.decodeObject(of: [NSArray.self, NSNumber.self], forKey: "expectedSegmentTravelTimes") as? [TimeInterval]
         segmentSpeeds = decoder.decodeObject(of: [NSArray.self, NSNumber.self], forKey: "segmentSpeeds") as? [CLLocationSpeed]
         segmentCongestionLevels = decoder.decodeObject(of: [NSArray.self, NSNumber.self], forKey: "segmentCongestionLevels") as? [CongestionLevel]
+        notifications = decoder.decodeObject(of: [NSArray.self, Notification.self], forKey: "notifications") as? [Notification] ?? []
     }
     
     @objc public static var supportsSecureCoding = true
@@ -111,6 +118,7 @@ open class RouteLeg: NSObject, NSSecureCoding {
         coder.encode(expectedSegmentTravelTimes, forKey: "expectedSegmentTravelTimes")
         coder.encode(segmentSpeeds, forKey: "segmentSpeeds")
         coder.encode(segmentCongestionLevels, forKey: "segmentCongestionLevels")
+        coder.encode(notifications, forKey: "notifications")
     }
     
     // MARK: Getting the Leg Geometry
@@ -174,6 +182,17 @@ open class RouteLeg: NSObject, NSSecureCoding {
      This property is set if the `RouteOptions.attributeOptions` property contains `.congestionLevel`.
      */
     public let segmentCongestionLevels: [CongestionLevel]?
+
+    /**
+     An array of notifications that are relevant to this route leg.
+
+     Notifications can warn drivers of potential risks or restrictions along the route, such as ferry
+     crossings, toll roads, or vehicle dimension violations. See the
+     [Mapbox Directions API notification object](https://docs.mapbox.com/api/navigation/directions/#notification-object).
+
+     Defaults to an empty array when the Directions API response does not include notifications.
+     */
+    @objc public let notifications: [Notification]
     
     // MARK: Getting Additional Leg Details
     
