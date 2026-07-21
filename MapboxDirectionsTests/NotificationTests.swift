@@ -113,8 +113,7 @@ class NotificationTests: XCTestCase {
         ])
 
         XCTAssertNotNil(notification)
-        XCTAssertEqual(notification?.type, .unknown)
-        XCTAssertEqual(notification?.typeDescription, "newType")
+        XCTAssertEqual(notification?.type, NotificationType(rawValue: "newType"))
         XCTAssertEqual(notification?.subtype, NotificationSubtype(rawValue: "newSubtype"))
         XCTAssertEqual(notification?.refreshType, NotificationRefreshType(rawValue: "newRefreshType"))
     }

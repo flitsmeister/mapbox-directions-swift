@@ -192,7 +192,7 @@ open class RouteLeg: NSObject, NSSecureCoding {
 
      Defaults to an empty array when the Directions API response does not include notifications.
      */
-    @objc public let notifications: [Notification]
+    public let notifications: [Notification]
     
     // MARK: Getting Additional Leg Details
     

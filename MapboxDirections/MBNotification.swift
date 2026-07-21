@@ -8,46 +8,28 @@ import Foundation
  are violated during route generation. `alert` is less severe and informs users when implicit
  preferences cannot be satisfied (for example `countryBorderCrossing`).
 
- Unknown values are preserved for forward compatibility.
+ Unknown values are preserved for forward compatibility via `rawValue`.
  */
-@objc(MBNotificationType)
-public enum NotificationType: Int, CustomStringConvertible {
+public struct NotificationType: RawRepresentable, Hashable, CustomStringConvertible {
+    public let rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+
+    public var description: String {
+        return rawValue
+    }
+
     /**
      An alert that is relevant to a route leg.
      */
-    case alert
+    public static let alert = NotificationType(rawValue: "alert")
 
     /**
      The route leg violates a restriction.
      */
-    case violation
-
-    /**
-     An unrecognized notification type returned by the Directions API.
-     */
-    case unknown
-
-    public init(description: String) {
-        switch description {
-        case "alert":
-            self = .alert
-        case "violation":
-            self = .violation
-        default:
-            self = .unknown
-        }
-    }
-
-    public var description: String {
-        switch self {
-        case .alert:
-            return "alert"
-        case .violation:
-            return "violation"
-        case .unknown:
-            return "unknown"
-        }
-    }
+    public static let violation = NotificationType(rawValue: "violation")
 }
 
 /**
@@ -174,37 +156,36 @@ public struct NotificationReason: RawRepresentable, Hashable, CustomStringConver
 
  See the [Mapbox Directions API notification object](https://docs.mapbox.com/api/navigation/directions/#notification-object).
  */
-@objc(MBNotificationDetails)
-open class NotificationDetails: NSObject, NSSecureCoding {
+public final class NotificationDetails: NSObject, NSSecureCoding {
 
     /**
      The optional requested value in the request.
 
      For example, it is `"3"` (meters) if `max_width=3` was specified in the request.
      */
-    @objc public let requestedValue: String?
+    public let requestedValue: String?
 
     /**
      The optional actual value associated with the property of the road.
 
      For example, it is `"2.5"` (meters) if the maximum road width is 2.5 meters.
      */
-    @objc public let actualValue: String?
+    public let actualValue: String?
 
     /**
      The optional unit of measure associated with `actualValue` and `requestedValue`.
      */
-    @objc public let unit: String?
+    public let unit: String?
 
     /**
      The optional message associated with the notification.
      */
-    @objc public let message: String?
+    public let message: String?
 
     /**
      Initializes notification details with the given values.
      */
-    @objc public init(requestedValue: String? = nil, actualValue: String? = nil, unit: String? = nil, message: String? = nil) {
+    public init(requestedValue: String? = nil, actualValue: String? = nil, unit: String? = nil, message: String? = nil) {
         self.requestedValue = requestedValue
         self.actualValue = actualValue
         self.unit = unit
@@ -214,7 +195,6 @@ open class NotificationDetails: NSObject, NSSecureCoding {
     /**
      Initializes notification details from a JSON dictionary representation.
      */
-    @objc(initWithJSON:)
     public convenience init(json: [String: Any]) {
         self.init(
             requestedValue: NotificationDetails.stringValue(from: json["requested_value"]),
@@ -231,7 +211,7 @@ open class NotificationDetails: NSObject, NSSecureCoding {
         message = decoder.decodeObject(of: NSString.self, forKey: "message") as String?
     }
 
-    @objc public static var supportsSecureCoding = true
+    public static var supportsSecureCoding = true
 
     public func encode(with coder: NSCoder) {
         coder.encode(requestedValue, forKey: "requestedValue")
@@ -277,22 +257,14 @@ open class NotificationDetails: NSObject, NSSecureCoding {
 
  According to the [Mapbox Directions API notification object](https://docs.mapbox.com/api/navigation/directions/#notification-object).
  */
-@objc(MBNotification)
-open class Notification: NSObject, NSSecureCoding {
+public final class Notification: NSObject, NSSecureCoding {
 
     /**
      The type of notification (`alert` or `violation`).
 
-     Unknown API values are exposed as `.unknown`; use `typeDescription` for the original wire value.
+     Unknown API values are preserved in `rawValue`.
      */
-    @objc public let type: NotificationType
-
-    /**
-     The original `type` string from the Directions API response.
-
-     Preserved for forward compatibility when `type` is `.unknown`.
-     */
-    @objc public let typeDescription: String
+    public let type: NotificationType
 
     /**
      The optional subtype of the notification.
@@ -302,23 +274,9 @@ open class Notification: NSObject, NSSecureCoding {
     public let subtype: NotificationSubtype?
 
     /**
-     The ObjC-compatible subtype string, if any.
-     */
-    @objc public var subtypeDescription: String? {
-        return subtype?.rawValue
-    }
-
-    /**
      The refresh type distinguishing static and dynamic notifications.
      */
     public let refreshType: NotificationRefreshType
-
-    /**
-     The ObjC-compatible refresh type string.
-     */
-    @objc public var refreshTypeDescription: String {
-        return refreshType.rawValue
-    }
 
     /**
      The optional position in the coordinate list where the notification occurred, relative to the start of the leg.
@@ -338,13 +296,12 @@ open class Notification: NSObject, NSSecureCoding {
     /**
      The optional details specific to the notification type and subtype.
      */
-    @objc public let details: NotificationDetails?
+    public let details: NotificationDetails?
 
     /**
      Initializes a notification with the given values.
      */
     public init(type: NotificationType,
-                typeDescription: String? = nil,
                 subtype: NotificationSubtype? = nil,
                 refreshType: NotificationRefreshType,
                 geometryIndex: Int? = nil,
@@ -352,7 +309,6 @@ open class Notification: NSObject, NSSecureCoding {
                 geometryIndexEnd: Int? = nil,
                 details: NotificationDetails? = nil) {
         self.type = type
-        self.typeDescription = typeDescription ?? type.description
         self.subtype = subtype
         self.refreshType = refreshType
         self.geometryIndex = geometryIndex
@@ -366,7 +322,6 @@ open class Notification: NSObject, NSSecureCoding {
 
      Returns `nil` if required fields `type` or `refresh_type` are missing.
      */
-    @objc(initWithJSON:)
     public convenience init?(json: [String: Any]) {
         guard let typeString = json["type"] as? String,
               let refreshTypeString = json["refresh_type"] as? String else {
@@ -388,8 +343,7 @@ open class Notification: NSObject, NSSecureCoding {
         }
 
         self.init(
-            type: NotificationType(description: typeString),
-            typeDescription: typeString,
+            type: NotificationType(rawValue: typeString),
             subtype: subtype,
             refreshType: NotificationRefreshType(rawValue: refreshTypeString),
             geometryIndex: json["geometry_index"] as? Int,
@@ -400,19 +354,18 @@ open class Notification: NSObject, NSSecureCoding {
     }
 
     public required init?(coder decoder: NSCoder) {
-        guard let typeDescription = decoder.decodeObject(of: NSString.self, forKey: "typeDescription") as String?,
-              let refreshTypeDescription = decoder.decodeObject(of: NSString.self, forKey: "refreshType") as String? else {
+        guard let typeRawValue = decoder.decodeObject(of: NSString.self, forKey: "type") as String?,
+              let refreshTypeRawValue = decoder.decodeObject(of: NSString.self, forKey: "refreshType") as String? else {
             return nil
         }
 
-        type = NotificationType(description: typeDescription)
-        self.typeDescription = typeDescription
-        if let subtypeDescription = decoder.decodeObject(of: NSString.self, forKey: "subtype") as String? {
-            subtype = NotificationSubtype(rawValue: subtypeDescription)
+        type = NotificationType(rawValue: typeRawValue)
+        if let subtypeRawValue = decoder.decodeObject(of: NSString.self, forKey: "subtype") as String? {
+            subtype = NotificationSubtype(rawValue: subtypeRawValue)
         } else {
             subtype = nil
         }
-        refreshType = NotificationRefreshType(rawValue: refreshTypeDescription)
+        refreshType = NotificationRefreshType(rawValue: refreshTypeRawValue)
 
         if decoder.containsValue(forKey: "geometryIndex") {
             geometryIndex = decoder.decodeInteger(forKey: "geometryIndex")
@@ -433,10 +386,10 @@ open class Notification: NSObject, NSSecureCoding {
         details = decoder.decodeObject(of: NotificationDetails.self, forKey: "details")
     }
 
-    @objc public static var supportsSecureCoding = true
+    public static var supportsSecureCoding = true
 
     public func encode(with coder: NSCoder) {
-        coder.encode(typeDescription, forKey: "typeDescription")
+        coder.encode(type.rawValue, forKey: "type")
         coder.encode(subtype?.rawValue, forKey: "subtype")
         coder.encode(refreshType.rawValue, forKey: "refreshType")
         if let geometryIndex = geometryIndex {
@@ -456,7 +409,7 @@ open class Notification: NSObject, NSSecureCoding {
      */
     public var json: [String: Any] {
         var dictionary: [String: Any] = [
-            "type": typeDescription,
+            "type": type.rawValue,
             "refresh_type": refreshType.rawValue
         ]
         if let subtype = subtype {
