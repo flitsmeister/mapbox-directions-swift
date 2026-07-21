@@ -10,7 +10,7 @@ import Foundation
 
  Unknown values are preserved for forward compatibility via `rawValue`.
  */
-public struct NotificationType: RawRepresentable, Hashable, CustomStringConvertible {
+public struct RouteNotificationType: RawRepresentable, Hashable, CustomStringConvertible {
     public let rawValue: String
 
     public init(rawValue: String) {
@@ -24,12 +24,12 @@ public struct NotificationType: RawRepresentable, Hashable, CustomStringConverti
     /**
      An alert that is relevant to a route leg.
      */
-    public static let alert = NotificationType(rawValue: "alert")
+    public static let alert = RouteNotificationType(rawValue: "alert")
 
     /**
      The route leg violates a restriction.
      */
-    public static let violation = NotificationType(rawValue: "violation")
+    public static let violation = RouteNotificationType(rawValue: "violation")
 }
 
 /**
@@ -37,7 +37,7 @@ public struct NotificationType: RawRepresentable, Hashable, CustomStringConverti
 
  Unknown values are preserved for forward compatibility via `rawValue`.
  */
-public struct NotificationSubtype: RawRepresentable, Hashable, CustomStringConvertible {
+public struct RouteNotificationSubtype: RawRepresentable, Hashable, CustomStringConvertible {
     public let rawValue: String
 
     public init(rawValue: String) {
@@ -52,58 +52,58 @@ public struct NotificationSubtype: RawRepresentable, Hashable, CustomStringConve
      `type=violation` — The height of the vehicle is greater than the allowed height of the road.
      Provided when `max_height` is specified.
      */
-    public static let maxHeight = NotificationSubtype(rawValue: "maxHeight")
+    public static let maxHeight = RouteNotificationSubtype(rawValue: "maxHeight")
 
     /**
      `type=violation` — The width of the vehicle is greater than the allowed width of the road.
      Provided when `max_width` is specified.
      */
-    public static let maxWidth = NotificationSubtype(rawValue: "maxWidth")
+    public static let maxWidth = RouteNotificationSubtype(rawValue: "maxWidth")
 
     /**
      `type=violation` — The weight of the vehicle is greater than the allowed weight of the road.
      Provided when `max_weight` is specified.
      */
-    public static let maxWeight = NotificationSubtype(rawValue: "maxWeight")
+    public static let maxWeight = RouteNotificationSubtype(rawValue: "maxWeight")
 
     /**
      `type=violation` — Unpaved road, while it was explicitly requested to exclude unpaved roads.
      Provided when `exclude=unpaved`.
      */
-    public static let unpaved = NotificationSubtype(rawValue: "unpaved")
+    public static let unpaved = RouteNotificationSubtype(rawValue: "unpaved")
 
     /**
      `type=violation` — Road with tunnel, while it was explicitly requested to exclude tunnels.
      `type=alert` — Indicates a tunnel is on the route.
      */
-    public static let tunnel = NotificationSubtype(rawValue: "tunnel")
+    public static let tunnel = RouteNotificationSubtype(rawValue: "tunnel")
 
     /**
      `type=violation` — Toll road, while it was explicitly requested to exclude toll roads.
      `type=alert` — Indicates a toll road is on the route.
      */
-    public static let toll = NotificationSubtype(rawValue: "toll")
+    public static let toll = RouteNotificationSubtype(rawValue: "toll")
 
     /**
      `type=violation` — Undesirable road excluded by point.
      Provided when `exclude=point(longitude latitude)`.
      */
-    public static let pointExclusion = NotificationSubtype(rawValue: "pointExclusion")
+    public static let pointExclusion = RouteNotificationSubtype(rawValue: "pointExclusion")
 
     /**
      `type=violation` / `type=alert` — Indicates a country border crossing.
      */
-    public static let countryBorderCrossing = NotificationSubtype(rawValue: "countryBorderCrossing")
+    public static let countryBorderCrossing = RouteNotificationSubtype(rawValue: "countryBorderCrossing")
 
     /**
      `type=violation` / `type=alert` — Indicates a state border crossing.
      */
-    public static let stateBorderCrossing = NotificationSubtype(rawValue: "stateBorderCrossing")
+    public static let stateBorderCrossing = RouteNotificationSubtype(rawValue: "stateBorderCrossing")
 
     /**
      `type=violation` — Indicates a ferry crossing. Provided when `exclude=ferry`.
      */
-    public static let ferry = NotificationSubtype(rawValue: "ferry")
+    public static let ferry = RouteNotificationSubtype(rawValue: "ferry")
 }
 
 /**
@@ -111,7 +111,7 @@ public struct NotificationSubtype: RawRepresentable, Hashable, CustomStringConve
 
  Unknown values are preserved for forward compatibility via `rawValue`.
  */
-public struct NotificationRefreshType: RawRepresentable, Hashable, CustomStringConvertible {
+public struct RouteNotificationRefreshType: RawRepresentable, Hashable, CustomStringConvertible {
     public let rawValue: String
 
     public init(rawValue: String) {
@@ -125,18 +125,18 @@ public struct NotificationRefreshType: RawRepresentable, Hashable, CustomStringC
     /**
      A notification received with the initial route request or a refresh, then kept constant.
      */
-    public static let `static` = NotificationRefreshType(rawValue: "static")
+    public static let `static` = RouteNotificationRefreshType(rawValue: "static")
 
     /**
      A notification that is updated and reset with each route refresh.
      */
-    public static let dynamic = NotificationRefreshType(rawValue: "dynamic")
+    public static let dynamic = RouteNotificationRefreshType(rawValue: "dynamic")
 }
 
 /**
  The reason why a notification was issued.
  */
-public struct NotificationReason: RawRepresentable, Hashable, CustomStringConvertible {
+public struct RouteNotificationReason: RawRepresentable, Hashable, CustomStringConvertible {
     public let rawValue: String
 
     public init(rawValue: String) {
@@ -147,8 +147,8 @@ public struct NotificationReason: RawRepresentable, Hashable, CustomStringConver
         return rawValue
     }
 
-    public static let outOfOrder = NotificationReason(rawValue: "outOfOrder")
-    public static let occupied = NotificationReason(rawValue: "occupied")
+    public static let outOfOrder = RouteNotificationReason(rawValue: "outOfOrder")
+    public static let occupied = RouteNotificationReason(rawValue: "occupied")
 }
 
 /**
@@ -156,7 +156,7 @@ public struct NotificationReason: RawRepresentable, Hashable, CustomStringConver
 
  See the [Mapbox Directions API notification object](https://docs.mapbox.com/api/navigation/directions/#notification-object).
  */
-public final class NotificationDetails: NSObject, NSSecureCoding {
+public final class RouteNotificationDetails: NSObject, NSSecureCoding {
 
     /**
      The optional requested value in the request.
@@ -197,8 +197,8 @@ public final class NotificationDetails: NSObject, NSSecureCoding {
      */
     public convenience init(json: [String: Any]) {
         self.init(
-            requestedValue: NotificationDetails.stringValue(from: json["requested_value"]),
-            actualValue: NotificationDetails.stringValue(from: json["actual_value"]),
+            requestedValue: RouteNotificationDetails.stringValue(from: json["requested_value"]),
+            actualValue: RouteNotificationDetails.stringValue(from: json["actual_value"]),
             unit: json["unit"] as? String,
             message: json["message"] as? String
         )
@@ -257,26 +257,26 @@ public final class NotificationDetails: NSObject, NSSecureCoding {
 
  According to the [Mapbox Directions API notification object](https://docs.mapbox.com/api/navigation/directions/#notification-object).
  */
-public final class Notification: NSObject, NSSecureCoding {
+public final class RouteNotification: NSObject, NSSecureCoding {
 
     /**
      The type of notification (`alert` or `violation`).
 
      Unknown API values are preserved in `rawValue`.
      */
-    public let type: NotificationType
+    public let type: RouteNotificationType
 
     /**
      The optional subtype of the notification.
 
-     Known values include `ferry`, `maxWidth`, `countryBorderCrossing`, and others defined by `NotificationSubtype`.
+     Known values include `ferry`, `maxWidth`, `countryBorderCrossing`, and others defined by `RouteNotificationSubtype`.
      */
-    public let subtype: NotificationSubtype?
+    public let subtype: RouteNotificationSubtype?
 
     /**
      The refresh type distinguishing static and dynamic notifications.
      */
-    public let refreshType: NotificationRefreshType
+    public let refreshType: RouteNotificationRefreshType
 
     /**
      The optional position in the coordinate list where the notification occurred, relative to the start of the leg.
@@ -296,18 +296,18 @@ public final class Notification: NSObject, NSSecureCoding {
     /**
      The optional details specific to the notification type and subtype.
      */
-    public let details: NotificationDetails?
+    public let details: RouteNotificationDetails?
 
     /**
      Initializes a notification with the given values.
      */
-    public init(type: NotificationType,
-                subtype: NotificationSubtype? = nil,
-                refreshType: NotificationRefreshType,
+    public init(type: RouteNotificationType,
+                subtype: RouteNotificationSubtype? = nil,
+                refreshType: RouteNotificationRefreshType,
                 geometryIndex: Int? = nil,
                 geometryIndexStart: Int? = nil,
                 geometryIndexEnd: Int? = nil,
-                details: NotificationDetails? = nil) {
+                details: RouteNotificationDetails? = nil) {
         self.type = type
         self.subtype = subtype
         self.refreshType = refreshType
@@ -328,24 +328,24 @@ public final class Notification: NSObject, NSSecureCoding {
             return nil
         }
 
-        let subtype: NotificationSubtype?
+        let subtype: RouteNotificationSubtype?
         if let subtypeString = json["subtype"] as? String {
-            subtype = NotificationSubtype(rawValue: subtypeString)
+            subtype = RouteNotificationSubtype(rawValue: subtypeString)
         } else {
             subtype = nil
         }
 
-        let details: NotificationDetails?
+        let details: RouteNotificationDetails?
         if let detailsJSON = json["details"] as? [String: Any] {
-            details = NotificationDetails(json: detailsJSON)
+            details = RouteNotificationDetails(json: detailsJSON)
         } else {
             details = nil
         }
 
         self.init(
-            type: NotificationType(rawValue: typeString),
+            type: RouteNotificationType(rawValue: typeString),
             subtype: subtype,
-            refreshType: NotificationRefreshType(rawValue: refreshTypeString),
+            refreshType: RouteNotificationRefreshType(rawValue: refreshTypeString),
             geometryIndex: json["geometry_index"] as? Int,
             geometryIndexStart: json["geometry_index_start"] as? Int,
             geometryIndexEnd: json["geometry_index_end"] as? Int,
@@ -359,13 +359,13 @@ public final class Notification: NSObject, NSSecureCoding {
             return nil
         }
 
-        type = NotificationType(rawValue: typeRawValue)
+        type = RouteNotificationType(rawValue: typeRawValue)
         if let subtypeRawValue = decoder.decodeObject(of: NSString.self, forKey: "subtype") as String? {
-            subtype = NotificationSubtype(rawValue: subtypeRawValue)
+            subtype = RouteNotificationSubtype(rawValue: subtypeRawValue)
         } else {
             subtype = nil
         }
-        refreshType = NotificationRefreshType(rawValue: refreshTypeRawValue)
+        refreshType = RouteNotificationRefreshType(rawValue: refreshTypeRawValue)
 
         if decoder.containsValue(forKey: "geometryIndex") {
             geometryIndex = decoder.decodeInteger(forKey: "geometryIndex")
@@ -383,7 +383,7 @@ public final class Notification: NSObject, NSSecureCoding {
             geometryIndexEnd = nil
         }
 
-        details = decoder.decodeObject(of: NotificationDetails.self, forKey: "details")
+        details = decoder.decodeObject(of: RouteNotificationDetails.self, forKey: "details")
     }
 
     public static var supportsSecureCoding = true

@@ -106,25 +106,25 @@ class NotificationTests: XCTestCase {
     }
 
     func testNotificationPreservesUnknownValuesForForwardCompatibility() {
-        let notification = Notification(json: [
+        let notification = RouteNotification(json: [
             "type": "newType",
             "subtype": "newSubtype",
             "refresh_type": "newRefreshType"
         ])
 
         XCTAssertNotNil(notification)
-        XCTAssertEqual(notification?.type, NotificationType(rawValue: "newType"))
-        XCTAssertEqual(notification?.subtype, NotificationSubtype(rawValue: "newSubtype"))
-        XCTAssertEqual(notification?.refreshType, NotificationRefreshType(rawValue: "newRefreshType"))
+        XCTAssertEqual(notification?.type, RouteNotificationType(rawValue: "newType"))
+        XCTAssertEqual(notification?.subtype, RouteNotificationSubtype(rawValue: "newSubtype"))
+        XCTAssertEqual(notification?.refreshType, RouteNotificationRefreshType(rawValue: "newRefreshType"))
     }
 
     func testNotificationRequiresTypeAndRefreshType() {
-        XCTAssertNil(Notification(json: ["refresh_type": "static"]))
-        XCTAssertNil(Notification(json: ["type": "alert"]))
+        XCTAssertNil(RouteNotification(json: ["refresh_type": "static"]))
+        XCTAssertNil(RouteNotification(json: ["type": "alert"]))
     }
 
     func testNotificationAllowsMessageOnlyDetailsAndNoSubtype() {
-        let notification = Notification(json: [
+        let notification = RouteNotification(json: [
             "type": "alert",
             "refresh_type": "dynamic",
             "details": [
@@ -166,14 +166,14 @@ class NotificationTests: XCTestCase {
     }
 
     func testNotificationJSONUsesDirectionsWireNames() {
-        let notification = Notification(
+        let notification = RouteNotification(
             type: .violation,
             subtype: nil,
             refreshType: .dynamic,
             geometryIndex: 5,
             geometryIndexStart: 4,
             geometryIndexEnd: 6,
-            details: NotificationDetails(
+            details: RouteNotificationDetails(
                 requestedValue: "3",
                 actualValue: "2.5"
             )
@@ -196,17 +196,17 @@ class NotificationTests: XCTestCase {
     }
 
     func testNotificationSecureCodingRoundTrip() {
-        let original = Notification(
+        let original = RouteNotification(
             type: .alert,
             subtype: .ferry,
             refreshType: .static,
             geometryIndexStart: 10,
             geometryIndexEnd: 15,
-            details: NotificationDetails(message: "Ferry ahead")
+            details: RouteNotificationDetails(message: "Ferry ahead")
         )
 
         let data = try! NSKeyedArchiver.archivedData(withRootObject: original, requiringSecureCoding: true)
-        let decoded = try! NSKeyedUnarchiver.unarchivedObject(ofClass: Notification.self, from: data)
+        let decoded = try! NSKeyedUnarchiver.unarchivedObject(ofClass: RouteNotification.self, from: data)
 
         XCTAssertNotNil(decoded)
         XCTAssertEqual(decoded?.type, .alert)
@@ -218,7 +218,7 @@ class NotificationTests: XCTestCase {
     }
 
     func testNotificationDetailsCoercesNumericValuesToString() {
-        let details = NotificationDetails(json: [
+        let details = RouteNotificationDetails(json: [
             "requested_value": 3,
             "actual_value": 2.5,
             "unit": "m",

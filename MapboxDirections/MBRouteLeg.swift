@@ -49,7 +49,7 @@ open class RouteLeg: NSObject, NSSecureCoding {
         self.segmentCongestionLevels = congestionLevels
 
         if let notificationsJSON = json["notifications"] as? [JSONDictionary] {
-            notifications = notificationsJSON.compactMap { Notification(json: $0) }
+            notifications = notificationsJSON.compactMap { RouteNotification(json: $0) }
         } else {
             notifications = []
         }
@@ -101,7 +101,7 @@ open class RouteLeg: NSObject, NSSecureCoding {
         expectedSegmentTravelTimes = decoder.decodeObject(of: [NSArray.self, NSNumber.self], forKey: "expectedSegmentTravelTimes") as? [TimeInterval]
         segmentSpeeds = decoder.decodeObject(of: [NSArray.self, NSNumber.self], forKey: "segmentSpeeds") as? [CLLocationSpeed]
         segmentCongestionLevels = decoder.decodeObject(of: [NSArray.self, NSNumber.self], forKey: "segmentCongestionLevels") as? [CongestionLevel]
-        notifications = decoder.decodeObject(of: [NSArray.self, Notification.self], forKey: "notifications") as? [Notification] ?? []
+        notifications = decoder.decodeObject(of: [NSArray.self, RouteNotification.self], forKey: "notifications") as? [RouteNotification] ?? []
     }
     
     @objc public static var supportsSecureCoding = true
@@ -192,7 +192,7 @@ open class RouteLeg: NSObject, NSSecureCoding {
 
      Defaults to an empty array when the Directions API response does not include notifications.
      */
-    public let notifications: [Notification]
+    public let notifications: [RouteNotification]
     
     // MARK: Getting Additional Leg Details
     
