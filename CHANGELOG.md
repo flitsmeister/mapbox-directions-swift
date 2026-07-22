@@ -1,5 +1,9 @@
 # Changes to the Mapbox Directions SDK for iOS
 
+## Unreleased
+
+* Added support for route leg notifications (`RouteNotification`), including alerts, violations, refresh behavior, subtypes, and notification details, following the [Mapbox Directions API notification object](https://docs.mapbox.com/api/navigation/directions/#notification-object). ([#8](https://github.com/flitsmeister/mapbox-directions-swift/pull/8))
+
 ## v0.23.0
 
 * Added `Waypoint.allowsArrivingOnOppositeSide` property for restricting the side of arrival. ([#288](https://github.com/mapbox/MapboxDirections.swift/pull/288))
