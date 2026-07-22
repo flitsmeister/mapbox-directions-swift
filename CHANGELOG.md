@@ -1,6 +1,6 @@
 # Changes to the Mapbox Directions SDK for iOS
 
-## Unreleased
+## v0.23.4
 
 * Added support for route leg notifications (`RouteNotification`), including alerts, violations, refresh behavior, subtypes, and notification details, following the [Mapbox Directions API notification object](https://docs.mapbox.com/api/navigation/directions/#notification-object). ([#8](https://github.com/flitsmeister/mapbox-directions-swift/pull/8))
 
