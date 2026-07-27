@@ -1,5 +1,9 @@
 # Changes to the Mapbox Directions SDK for iOS
 
+## v0.23.5
+
+* Made `refresh_type` optional when parsing `RouteNotification` JSON; defaults to `.static` when omitted. Geometry index fields also accept `NSNumber` values from JSON deserialization. ([#9](https://github.com/flitsmeister/mapbox-directions-swift/pull/9))
+
 ## v0.23.4
 
 * Added support for route leg notifications (`RouteNotification`), including alerts, violations, refresh behavior, subtypes, and notification details, following the [Mapbox Directions API notification object](https://docs.mapbox.com/api/navigation/directions/#notification-object). ([#8](https://github.com/flitsmeister/mapbox-directions-swift/pull/8))

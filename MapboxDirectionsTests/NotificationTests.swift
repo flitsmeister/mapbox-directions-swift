@@ -118,9 +118,24 @@ class NotificationTests: XCTestCase {
         XCTAssertEqual(notification?.refreshType, RouteNotificationRefreshType(rawValue: "newRefreshType"))
     }
 
-    func testNotificationRequiresTypeAndRefreshType() {
+    func testNotificationRequiresType() {
         XCTAssertNil(RouteNotification(json: ["refresh_type": "static"]))
-        XCTAssertNil(RouteNotification(json: ["type": "alert"]))
+    }
+
+    func testNotificationDefaultsRefreshTypeWhenMissing() {
+        let notification = RouteNotification(json: [
+            "type": "alert",
+            "subtype": "ferry",
+            "geometry_index_start": 335,
+            "geometry_index_end": 339
+        ])
+
+        XCTAssertNotNil(notification)
+        XCTAssertEqual(notification?.type, .alert)
+        XCTAssertEqual(notification?.subtype, .ferry)
+        XCTAssertEqual(notification?.refreshType, .static)
+        XCTAssertEqual(notification?.geometryIndexStart, 335)
+        XCTAssertEqual(notification?.geometryIndexEnd, 339)
     }
 
     func testNotificationAllowsMessageOnlyDetailsAndNoSubtype() {
