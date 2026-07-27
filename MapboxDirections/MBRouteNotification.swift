@@ -320,11 +320,11 @@ public final class RouteNotification: NSObject, NSSecureCoding {
     /**
      Initializes a notification from a JSON dictionary representation.
 
-     Returns `nil` if required fields `type` or `refresh_type` are missing.
+     Returns `nil` if the required field `type` is missing.
+     When `refresh_type` is absent, defaults to `.static` (some providers omit it).
      */
     public convenience init?(json: [String: Any]) {
-        guard let typeString = json["type"] as? String,
-              let refreshTypeString = json["refresh_type"] as? String else {
+        guard let typeString = json["type"] as? String else {
             return nil
         }
 
@@ -342,13 +342,20 @@ public final class RouteNotification: NSObject, NSSecureCoding {
             details = nil
         }
 
+        let refreshType: RouteNotificationRefreshType
+        if let refreshTypeString = json["refresh_type"] as? String {
+            refreshType = RouteNotificationRefreshType(rawValue: refreshTypeString)
+        } else {
+            refreshType = .static
+        }
+
         self.init(
             type: RouteNotificationType(rawValue: typeString),
             subtype: subtype,
-            refreshType: RouteNotificationRefreshType(rawValue: refreshTypeString),
-            geometryIndex: json["geometry_index"] as? Int,
-            geometryIndexStart: json["geometry_index_start"] as? Int,
-            geometryIndexEnd: json["geometry_index_end"] as? Int,
+            refreshType: refreshType,
+            geometryIndex: (json["geometry_index"] as? NSNumber)?.intValue,
+            geometryIndexStart: (json["geometry_index_start"] as? NSNumber)?.intValue,
+            geometryIndexEnd: (json["geometry_index_end"] as? NSNumber)?.intValue,
             details: details
         )
     }
